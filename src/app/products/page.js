@@ -11,6 +11,7 @@ import {
 } from "@mui/material"
 import DeleteProductButton from "../components/buttons/DeleteProductButton"
 import Link from "next/link"
+import ProductListItem from "../components/cards/products/ProductListItem"
 
 export default async function ProductsPage() {
   const apolloClient = initializeApollo()
@@ -44,32 +45,7 @@ export default async function ProductsPage() {
       >
         {products.length > 0 ? (
           products.map((product) => (
-            <React.Fragment key={product.id}>
-              <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar
-                    alt={product.name}
-                    src="/static/images/avatar/1.jpg" // Placeholder for a product image
-                  />
-                </ListItemAvatar>
-                <Link href={`/products/${product.sku}`} passHref>
-                  <ListItemText
-                    primary={product.name}
-                    secondary={`Price: $${product.basePrice} USD`}
-                    primaryTypographyProps={{
-                      fontWeight: "bold",
-                      color: "#333",
-                    }}
-                    secondaryTypographyProps={{
-                      fontSize: "14px",
-                      color: "gray",
-                    }}
-                  />
-                </Link>
-                <DeleteProductButton productId={product.id} />
-              </ListItem>
-              <Divider variant="middle" />
-            </React.Fragment>
+            <ProductListItem key={product.id} item={product} />
           ))
         ) : (
           <p

@@ -11,6 +11,7 @@ import {
 } from "@mui/material"
 import Link from "next/link"
 import DeleteOrderButton from "../components/buttons/DeleteOrderButton"
+import OrderListItem from "../components/cards/orders/OrderListItem"
 
 export default async function OrdersPage() {
   const apolloClient = initializeApollo()
@@ -44,39 +45,7 @@ export default async function OrdersPage() {
       >
         {orders.length > 0 ? (
           orders.map((order) => (
-            <React.Fragment key={order.id}>
-              <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar
-                    alt={`${order.customer.name}`}
-                    src="/static/images/avatar/1.jpg" // Placeholder for customer avatar
-                  />
-                </ListItemAvatar>
-                <Link href={`/orders/${order.id}`} passHref>
-                  <ListItemText
-                    primary={`Order #${order.id}`}
-                    secondary={`Customer: ${
-                      order.customer.name
-                    } | Total: $${order.items.reduce(
-                      (total, item) => total + item.quantity * item.price,
-                      0
-                    )} | Created: ${new Date(
-                      order.createdAt
-                    ).toLocaleDateString()}`}
-                    primaryTypographyProps={{
-                      fontWeight: "bold",
-                      color: "#333",
-                    }}
-                    secondaryTypographyProps={{
-                      fontSize: "14px",
-                      color: "gray",
-                    }}
-                  />
-                </Link>
-              </ListItem>
-              <DeleteOrderButton orderId={order.id} />
-              <Divider variant="middle" />
-            </React.Fragment>
+            <OrderListItem key={order.id} order={order} />
           ))
         ) : (
           <p

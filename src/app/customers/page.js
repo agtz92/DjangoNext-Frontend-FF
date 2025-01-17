@@ -12,6 +12,7 @@ import React from "react"
 import { useQuery } from "@apollo/client"
 import { GET_CUSTOMERS } from "../api/graphql" // Adjust the path as needed
 import Link from "next/link"
+import CustomerListItem from "../components/cards/customers/CustomerListItem"
 
 export default function CustomersPage() {
   const { data, loading, error } = useQuery(GET_CUSTOMERS)
@@ -52,70 +53,7 @@ export default function CustomersPage() {
         }}
       >
         {customers.map((customer) => (
-          <React.Fragment key={customer.id}>
-            <ListItem alignItems="flex-start">
-              <ListItemAvatar>
-                <Avatar
-                  alt={customer.name}
-                  src="/static/images/avatar/1.jpg" // Replace with a dynamic image URL if available
-                />
-              </ListItemAvatar>
-              <Link href={`/customers/${customer.id}`}>
-                <ListItemText
-                  primary={
-                    <React.Fragment>
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        color="textSecondary"
-                        style={{ fontWeight: "bold" }}
-                      >
-                        {customer.company?.name || "No company available"}
-                      </Typography>
-                      <br />
-                      <Typography
-                        variant="body1"
-                        component="span"
-                        style={{ color: "#333", fontWeight: "bold" }}
-                      >
-                        {customer.name}
-                      </Typography>
-                    </React.Fragment>
-                  }
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        style={{ display: "block", color: "gray" }}
-                      >
-                        {customer.email}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        style={{ display: "block", color: "gray" }}
-                      >
-                        {customer.phone || "No phone available"}
-                      </Typography>
-                    </React.Fragment>
-                  }
-                  primaryTypographyProps={{
-                    fontWeight: "bold",
-                    color: "#333",
-                  }}
-                  secondaryTypographyProps={{
-                    fontSize: "14px",
-                    color: "gray",
-                  }}
-                  sx={{
-                    whiteSpace: "pre-wrap", // Ensures multiline support
-                  }}
-                />
-              </Link>
-            </ListItem>
-            <Divider variant="middle" />
-          </React.Fragment>
+          <CustomerListItem key={customer.id} customer={customer} />
         ))}
       </List>
     </div>

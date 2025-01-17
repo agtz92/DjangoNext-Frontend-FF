@@ -5,6 +5,7 @@ import { useQuery } from "@apollo/client"
 import { GET_COMPANIES } from "../api/graphql"
 import { List, ListItem, ListItemText, Divider } from "@mui/material"
 import Link from "next/link"
+import CompanyListItem from "../components/cards/companies/CompanyListItem"
 
 export default function CompaniesPage() {
   const { data, loading, error } = useQuery(GET_COMPANIES)
@@ -39,20 +40,7 @@ export default function CompaniesPage() {
         {companies.map((company) => (
           <React.Fragment key={company.id}>
             <Link href={`/companies/${company.id}`} passHref>
-              <ListItem alignItems="flex-start">
-                <ListItemText
-                  primary={company.name}
-                  secondary={`Business Line: ${company.businessLine} | State: ${company.state}`}
-                  primaryTypographyProps={{
-                    fontWeight: "bold",
-                    color: "#333",
-                  }}
-                  secondaryTypographyProps={{
-                    fontSize: "14px",
-                    color: "gray",
-                  }}
-                />
-              </ListItem>
+              <CompanyListItem key={company.id} company={company} />
             </Link>
             <Divider variant="middle" />
           </React.Fragment>
