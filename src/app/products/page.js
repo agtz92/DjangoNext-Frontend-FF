@@ -1,22 +1,27 @@
 "use server"
-import React from "react";
-import { initializeApollo } from "@/lib/apolloClient"; // Adjust path
-import { GET_PRODUCTS } from "../api/graphql"; // Adjust path
-import { List } from "@mui/material";
-import ProductListItem from "../components/cards/products/ProductListItem";
+import React from "react"
+import { initializeApollo } from "@/lib/apolloClient" // Adjust path
+import { GET_PRODUCTS } from "../api/graphql" // Adjust path
+import { List } from "@mui/material"
+import ProductListItem from "../components/cards/products/ProductListItem"
 
 async function fetchProducts() {
-  const apolloClient = initializeApollo();
+  try {
+    const apolloClient = initializeApollo()
 
-  const { data } = await apolloClient.query({
-    query: GET_PRODUCTS,
-  });
+    const { data } = await apolloClient.query({
+      query: GET_PRODUCTS,
+    })
 
-  return data.products || [];
+    return data.products || []
+  } catch (error) {
+    console.error("Failed to fetch products:", error)
+    return [] 
+  }
 }
 
 export default async function ProductsPage() {
-  const products = await fetchProducts(); // Fetch fresh data on every request
+  const products = await fetchProducts() 
 
   return (
     <div style={{ padding: "20px" }}>
@@ -56,5 +61,5 @@ export default async function ProductsPage() {
         )}
       </List>
     </div>
-  );
+  )
 }
