@@ -1,27 +1,27 @@
 import React from "react"
 import { initializeApollo } from "@/lib/apolloClient" // Adjust path
 import { GET_PRODUCTS } from "../api/graphql"
-import {
-  Avatar,
-  Divider,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-} from "@mui/material"
-import DeleteProductButton from "../components/buttons/DeleteProductButton"
-import Link from "next/link"
+import { List } from "@mui/material"
 import ProductListItem from "../components/cards/products/ProductListItem"
 
-export default async function ProductsPage() {
+export async function getStaticProps() {
   const apolloClient = initializeApollo()
 
   const { data } = await apolloClient.query({
     query: GET_PRODUCTS,
   })
 
-  const products = data.products
+  const products = data.products || []
 
+  return {
+    props: {
+      products,
+    },
+    revalidate: 60, // Revalidate every 60 seconds
+  }
+}
+
+export default function ProductsPage({ products }) {
   return (
     <div style={{ padding: "20px" }}>
       <h1
