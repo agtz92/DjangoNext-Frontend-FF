@@ -1,27 +1,22 @@
-import React from "react"
-import { initializeApollo } from "@/lib/apolloClient" // Adjust path
-import { GET_PRODUCTS } from "../api/graphql"
-import { List } from "@mui/material"
-import ProductListItem from "../components/cards/products/ProductListItem"
+import React from "react";
+import { initializeApollo } from "@/lib/apolloClient"; // Adjust path
+import { GET_PRODUCTS } from "../api/graphql"; // Adjust path
+import { List } from "@mui/material";
+import ProductListItem from "../components/cards/products/ProductListItem";
 
-export async function getStaticProps() {
-  const apolloClient = initializeApollo()
+async function fetchProducts() {
+  const apolloClient = initializeApollo();
 
   const { data } = await apolloClient.query({
     query: GET_PRODUCTS,
-  })
+  });
 
-  const products = data.products || []
-
-  return {
-    props: {
-      products,
-    },
-    revalidate: 60, // Revalidate every 60 seconds
-  }
+  return data.products || [];
 }
 
-export default function ProductsPage({ products }) {
+export default async function ProductsPage() {
+  const products = await fetchProducts();
+
   return (
     <div style={{ padding: "20px" }}>
       <h1
@@ -60,5 +55,7 @@ export default function ProductsPage({ products }) {
         )}
       </List>
     </div>
-  )
+  );
 }
+
+export const revalidate = 60; // Revalidate every 60 seconds
