@@ -19,7 +19,7 @@ const ProductListItem = ({ item }) => {
             src={item.image || "/static/images/avatar/placeholder.jpg"} // Placeholder for an item image
           />
         </ListItemAvatar>
-        <Link href={`/${item.path}/${item.sku}`} passHref>
+        <Link href={`/products/${item.sku}`} passHref>
           <ListItemText
             primary={item.name}
             secondary={`Price: $${item.basePrice} USD`}
