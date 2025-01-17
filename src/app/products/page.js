@@ -1,3 +1,4 @@
+"use server"
 import React from "react";
 import { initializeApollo } from "@/lib/apolloClient"; // Adjust path
 import { GET_PRODUCTS } from "../api/graphql"; // Adjust path
