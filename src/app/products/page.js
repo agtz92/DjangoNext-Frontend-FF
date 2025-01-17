@@ -1,21 +1,21 @@
-import React from "react";
-import { initializeApollo } from "@/lib/apolloClient"; // Adjust path
-import { GET_PRODUCTS } from "../api/graphql"; // Adjust path
-import { List } from "@mui/material";
-import ProductListItem from "../components/cards/products/ProductListItem";
+import React from "react"
+import { initializeApollo } from "@/lib/apolloClient" // Adjust path
+import { GET_PRODUCTS } from "../api/graphql" // Adjust path
+import { List } from "@mui/material"
+import ProductListItem from "../components/cards/products/ProductListItem"
 
 async function fetchProducts() {
-  const apolloClient = initializeApollo();
+  const apolloClient = initializeApollo()
 
   const { data } = await apolloClient.query({
     query: GET_PRODUCTS,
-  });
+  })
 
-  return data.products || [];
+  return data.products || []
 }
 
 export default async function ProductsPage() {
-  const products = await fetchProducts();
+  const products = await fetchProducts()
 
   return (
     <div style={{ padding: "20px" }}>
@@ -55,7 +55,7 @@ export default async function ProductsPage() {
         )}
       </List>
     </div>
-  );
+  )
 }
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const revalidate = 5
