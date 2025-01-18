@@ -10,10 +10,12 @@ import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined"
 import AddIcon from "@mui/icons-material/Add"
 import SearchIcon from "@mui/icons-material/Search"
 import BusinessIcon from "@mui/icons-material/Business"
+import { useDrawer } from "../../context/DrawerContext"
 
 import ApplicationDrawerItem from "./ApplicationDrawerItem" // Adjust the path as necessary
 
-const ApplicationDrawer = ({ open, onClose }) => {
+const ApplicationDrawer = () => {
+  const { drawerOpen: open, toggleDrawer: onClose } = useDrawer()
   const menu1 = [
     {
       icon: <SellOutlinedIcon />,

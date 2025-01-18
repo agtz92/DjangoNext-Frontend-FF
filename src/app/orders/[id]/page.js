@@ -1,5 +1,5 @@
 import React from "react"
-import { initializeApollo } from "@/lib/apolloClient"
+import { getClient } from "@/lib/apolloClient"
 import { GET_ORDER_BY_ID } from "../../api/graphql"
 import { List, ListItem, ListItemText } from "@mui/material"
 import Link from "next/link"
@@ -8,19 +8,16 @@ import DeleteOrderButton from "@/app/components/buttons/DeleteOrderButton"
 export default async function OrderDetailPage({ params }) {
   const { id } = await params
 
-  const apolloClient = initializeApollo()
-
-  let order
+  let order = null
 
   try {
-    const { data } = await apolloClient.query({
+    const client = getClient() 
+    const { data } = await client.query({
       query: GET_ORDER_BY_ID,
       variables: { id },
     })
 
-    // Check if the order exists
     if (!data?.order) {
-      console.warn("Order not found")
       return (
         <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
           <h1 style={{ textAlign: "center", color: "red" }}>Order Not Found</h1>
@@ -42,12 +39,9 @@ export default async function OrderDetailPage({ params }) {
     console.error("Failed to fetch order details:", error)
     return (
       <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
-        <h1 style={{ textAlign: "center", color: "red" }}>
-          Error Loading Order
-        </h1>
+        <h1 style={{ textAlign: "center", color: "red" }}>Error Loading Order</h1>
         <p style={{ textAlign: "center" }}>
-          Something went wrong while fetching the order details. Please try
-          again later.
+          Something went wrong while fetching the order details. Please try again later.
         </p>
         <Link
           href="/orders"
@@ -63,21 +57,18 @@ export default async function OrderDetailPage({ params }) {
     <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
       <h1 style={{ textAlign: "center" }}>Order #{order.id}</h1>
 
-      {/* Order Details */}
       <div style={{ marginBottom: "20px", textAlign: "center" }}>
-      <p>
+        <p>
           <strong>Empresa:</strong> {order.customer.company?.name || "Unknown"}
         </p>
         <p>
           <strong>Customer:</strong> {order.customer.name || "Unknown"}
         </p>
         <p>
-          <strong>Order Date:</strong>{" "}
-          {new Date(order.createdAt).toLocaleString()}
+          <strong>Order Date:</strong> {new Date(order.createdAt).toLocaleString()}
         </p>
       </div>
 
-      {/* Order Items */}
       <h3>Order Items</h3>
       <List
         sx={{
@@ -107,7 +98,6 @@ export default async function OrderDetailPage({ params }) {
         )}
       </List>
 
-      {/* Total Price */}
       <h3 style={{ textAlign: "center", marginTop: "20px" }}>
         Total Price: $
         {order.items.reduce(
@@ -115,7 +105,8 @@ export default async function OrderDetailPage({ params }) {
           0
         )}
       </h3>
-      <DeleteOrderButton orderId={order.id}/>
+      
+      <DeleteOrderButton orderId={order.id} />
 
       <Link
         href="/orders"

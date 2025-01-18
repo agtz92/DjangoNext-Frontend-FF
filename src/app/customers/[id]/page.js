@@ -1,5 +1,5 @@
 import React from "react"
-import { initializeApollo } from "@/lib/apolloClient"
+import { getClient } from "@/lib/apolloClient"
 import { GET_CUSTOMER_BY_ID } from "../../api/graphql"
 import { Box, Avatar } from "@mui/material"
 import Grid from "@mui/material/Grid2"
@@ -11,21 +11,18 @@ import Link from "next/link"
 export default async function CustomerDetailPage({ params }) {
   const { id } = await params
 
-  const apolloClient = initializeApollo()
-
-  let customer
+  let customer = null
 
   try {
-    const { data } = await apolloClient.query({
+    const client = getClient() // Get Apollo Client instance
+    const { data } = await client.query({
       query: GET_CUSTOMER_BY_ID,
       variables: { id },
     })
 
-    // Check if the customer exists
     if (!data?.customer) {
-      console.warn("Customer not found")
       return (
-        <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+        <Box sx={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
           <h1 style={{ textAlign: "center", color: "red" }}>
             Customer Not Found
           </h1>
@@ -42,7 +39,7 @@ export default async function CustomerDetailPage({ params }) {
           >
             Back to Customers
           </Link>
-        </div>
+        </Box>
       )
     }
 
@@ -50,7 +47,7 @@ export default async function CustomerDetailPage({ params }) {
   } catch (error) {
     console.error("Failed to fetch customer details:", error)
     return (
-      <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+      <Box sx={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
         <h1 style={{ textAlign: "center", color: "red" }}>
           Error Loading Customer
         </h1>
@@ -68,7 +65,7 @@ export default async function CustomerDetailPage({ params }) {
         >
           Back to Customers
         </Link>
-      </div>
+      </Box>
     )
   }
 
@@ -84,7 +81,7 @@ export default async function CustomerDetailPage({ params }) {
       <Grid container spacing={2}>
         <Grid size={{ xs: 6, md: 4 }}>
           <CustomerCard
-            empresa={`Empresa: ${customer.company?.name }`|| "No company available"}
+            empresa={`Empresa: ${customer.company?.name}` || "No company available"}
             subtitle={customer.name || "No name available."}
             email={`Email: ${customer.email || "No email available."}`}
             phone={`Phone: ${customer.phone || "No phone available."}`}

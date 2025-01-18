@@ -1,19 +1,21 @@
-import { createContext, useState, useContext } from "react"
+"use client"
+
+import React, { createContext, useContext } from "react"
 
 const DarkModeContext = createContext()
 
-export const DarkModeProvider = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(false)
-
-  const toggleDarkMode = () => {
-    setDarkMode((prevMode) => !prevMode)
-  }
-
+export const DarkModeProvider = ({ children, initialDarkMode = false }) => {
   return (
-    <DarkModeContext.Provider value={{ darkMode, toggleDarkMode }}>
+    <DarkModeContext.Provider value={{ darkMode: initialDarkMode }}>
       {children}
     </DarkModeContext.Provider>
   )
 }
 
-export const useDarkMode = () => useContext(DarkModeContext)
+export const useDarkMode = () => {
+  const context = useContext(DarkModeContext)
+  if (!context) {
+    throw new Error("useDarkMode must be used within a DarkModeProvider")
+  }
+  return context
+}

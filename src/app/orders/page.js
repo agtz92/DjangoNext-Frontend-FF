@@ -1,26 +1,26 @@
+"use client"
 import React from "react"
-import { initializeApollo } from "@/lib/apolloClient"
-import { GET_ORDERS } from "../api/graphql"
-import {
-  Avatar,
-  Divider,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-} from "@mui/material"
-import Link from "next/link"
-import DeleteOrderButton from "../components/buttons/DeleteOrderButton"
+import { List } from "@mui/material"
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr"
+import { GET_ORDERS } from "../api/graphql" 
 import OrderListItem from "../components/cards/orders/OrderListItem"
 
-export default async function OrdersPage() {
-  const apolloClient = initializeApollo()
+export default function ProductsPage() {
+  const { data, loading, error } = useSuspenseQuery(GET_ORDERS)
 
-  const { data } = await apolloClient.query({
-    query: GET_ORDERS,
-  })
+  if (loading) {
+    return <p style={{ textAlign: "center" }}>Loading orders...</p>
+  }
 
-  const orders = data.orders
+  if (error) {
+    return (
+      <p style={{ textAlign: "center", color: "red" }}>
+        Error: {error.message}
+      </p>
+    )
+  }
+
+  const orders = data.orders || []
 
   return (
     <div style={{ padding: "20px" }}>
@@ -43,21 +43,9 @@ export default async function OrdersPage() {
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         }}
       >
-        {orders.length > 0 ? (
-          orders.map((order) => (
-            <OrderListItem key={order.id} order={order} />
-          ))
-        ) : (
-          <p
-            style={{
-              textAlign: "center",
-              color: "gray",
-              padding: "20px",
-            }}
-          >
-            No orders available.
-          </p>
-        )}
+        {orders.map((order) => (
+          <OrderListItem key={order.id} order={order} />
+        ))}
       </List>
     </div>
   )

@@ -10,9 +10,11 @@ import MenuIcon from "@mui/icons-material/Menu"
 import { useDarkMode } from "@/app/context/DarkModeContext"
 import Brightness4Icon from "@mui/icons-material/Brightness4"
 import Brightness7Icon from "@mui/icons-material/Brightness7"
+import { useDrawer } from "../../context/DrawerContext"
 
-const ApplicationBar = ({ onMenuClick }) => {
+const ApplicationBar = () => {
   const { darkMode, toggleDarkMode } = useDarkMode()
+  const { toggleDrawer } = useDrawer()
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -23,7 +25,7 @@ const ApplicationBar = ({ onMenuClick }) => {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-            onClick={onMenuClick} 
+            onClick={() => toggleDrawer(true)}
           >
             <MenuIcon />
           </IconButton>

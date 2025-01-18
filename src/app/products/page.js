@@ -1,27 +1,26 @@
-"use server"
+"use client"
 import React from "react"
-import { initializeApollo } from "@/lib/apolloClient" // Adjust path
-import { GET_PRODUCTS } from "../api/graphql" // Adjust path
 import { List } from "@mui/material"
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr"
+import { GET_PRODUCTS } from "../api/graphql" 
 import ProductListItem from "../components/cards/products/ProductListItem"
 
-async function fetchProducts() {
-  try {
-    const apolloClient = initializeApollo()
+export default function ProductsPage() {
+  const { data, loading, error } = useSuspenseQuery(GET_PRODUCTS)
 
-    const { data } = await apolloClient.query({
-      query: GET_PRODUCTS,
-    })
-
-    return data.products || []
-  } catch (error) {
-    console.error("Failed to fetch products:", error)
-    return [] 
+  if (loading) {
+    return <p style={{ textAlign: "center" }}>Loading products...</p>
   }
-}
 
-export default async function ProductsPage() {
-  const products = await fetchProducts() 
+  if (error) {
+    return (
+      <p style={{ textAlign: "center", color: "red" }}>
+        Error: {error.message}
+      </p>
+    )
+  }
+
+  const products = data.products || []
 
   return (
     <div style={{ padding: "20px" }}>
@@ -44,21 +43,9 @@ export default async function ProductsPage() {
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         }}
       >
-        {products.length > 0 ? (
-          products.map((product) => (
-            <ProductListItem key={product.id} item={product} />
-          ))
-        ) : (
-          <p
-            style={{
-              textAlign: "center",
-              color: "gray",
-              padding: "20px",
-            }}
-          >
-            No products available.
-          </p>
-        )}
+        {products.map((product) => (
+          <ProductListItem key={product.id} item={product} />
+        ))}
       </List>
     </div>
   )

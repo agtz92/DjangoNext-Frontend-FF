@@ -1,18 +1,18 @@
 import React from "react"
-import { initializeApollo } from "@/lib/apolloClient"
+import { getClient } from "@/lib/apolloClient"
 import { GET_COMPANY_BY_ID } from "../../api/graphql"
 import { List, ListItem, ListItemText, Box, Typography } from "@mui/material"
 import Link from "next/link"
 
 export default async function CompanyDetailPage({ params }) {
-  const { id } = await params
-  const apolloClient = initializeApollo()
+  const { id, loading, error } = await params
 
-  let company
+  let company = null
   let totalCompanyRevenue = 0
 
   try {
-    const { data } = await apolloClient.query({
+    const client = getClient() 
+    const { data, error } = await client.query({
       query: GET_COMPANY_BY_ID,
       variables: { id },
     })
@@ -74,7 +74,6 @@ export default async function CompanyDetailPage({ params }) {
 
   return (
     <Box sx={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
-      {/* Total Revenue */}
       <Typography
         variant="h5"
         align="center"
@@ -88,7 +87,6 @@ export default async function CompanyDetailPage({ params }) {
         {company.name}
       </Typography>
 
-      {/* Company Details */}
       <Box sx={{ marginBottom: "20px", textAlign: "center" }}>
         <Typography>
           <strong>Business Line:</strong> {company.businessLine || "N/A"}
@@ -98,7 +96,6 @@ export default async function CompanyDetailPage({ params }) {
         </Typography>
       </Box>
 
-      {/* Customers List */}
       <Typography variant="h6">Customers</Typography>
       <List
         sx={{
@@ -115,9 +112,9 @@ export default async function CompanyDetailPage({ params }) {
             <ListItem alignItems="flex-start" key={index}>
               <ListItemText
                 primary={customer.name}
-                secondary={`Email: ${customer.email} | Total: $${customer.totalPrice.toFixed(
-                  2
-                )}`}
+                secondary={`Email: ${
+                  customer.email
+                } | Total: $${customer.totalPrice.toFixed(2)}`}
               />
               <Link href={`/customers/${customer.id}`} passHref>
                 <Typography color="primary">View Details</Typography>
@@ -133,7 +130,11 @@ export default async function CompanyDetailPage({ params }) {
 
       <Link
         href="/companies"
-        style={{ textAlign: "center", display: "block", marginTop: "20px" }}
+        style={{
+          textAlign: "center",
+          display: "block",
+          marginTop: "20px",
+        }}
       >
         Back to Companies
       </Link>

@@ -1,14 +1,13 @@
 "use client"
-
 import React from "react"
-import { useQuery } from "@apollo/client"
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr"
 import { GET_COMPANIES } from "../api/graphql"
 import { List, ListItem, ListItemText, Divider } from "@mui/material"
 import Link from "next/link"
 import CompanyListItem from "../components/cards/companies/CompanyListItem"
 
 export default function CompaniesPage() {
-  const { data, loading, error } = useQuery(GET_COMPANIES)
+  const { data, loading, error } = useSuspenseQuery(GET_COMPANIES)
 
   if (loading) {
     return <p style={{ textAlign: "center" }}>Loading companies...</p>

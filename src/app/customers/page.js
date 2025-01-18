@@ -1,21 +1,12 @@
 "use client"
-import {
-  Avatar,
-  Divider,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Typography,
-} from "@mui/material"
 import React from "react"
-import { useQuery } from "@apollo/client"
-import { GET_CUSTOMERS } from "../api/graphql" // Adjust the path as needed
-import Link from "next/link"
+import { List } from "@mui/material"
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr"
+import { GET_CUSTOMERS } from "../api/graphql" 
 import CustomerListItem from "../components/cards/customers/CustomerListItem"
 
 export default function CustomersPage() {
-  const { data, loading, error } = useQuery(GET_CUSTOMERS)
+  const { data, loading, error } = useSuspenseQuery(GET_CUSTOMERS)
 
   if (loading) {
     return <p style={{ textAlign: "center" }}>Loading customers...</p>
@@ -29,7 +20,7 @@ export default function CustomersPage() {
     )
   }
 
-  const customers = data.customers
+  const customers = data.customers || []
 
   return (
     <div style={{ padding: "20px" }}>
