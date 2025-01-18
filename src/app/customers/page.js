@@ -6,7 +6,9 @@ import { GET_CUSTOMERS } from "../api/graphql"
 import CustomerListItem from "../components/cards/customers/CustomerListItem"
 
 export default function CustomersPage() {
-  const { data, loading, error } = useSuspenseQuery(GET_CUSTOMERS)
+  const { data, loading, error } = useSuspenseQuery(GET_CUSTOMERS, {
+    fetchPolicy: "no-cache"
+  })
 
   if (loading) {
     return <p style={{ textAlign: "center" }}>Loading customers...</p>

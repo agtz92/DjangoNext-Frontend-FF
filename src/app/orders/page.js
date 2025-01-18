@@ -6,7 +6,9 @@ import { GET_ORDERS } from "../api/graphql"
 import OrderListItem from "../components/cards/orders/OrderListItem"
 
 export default function ProductsPage() {
-  const { data, loading, error } = useSuspenseQuery(GET_ORDERS)
+  const { data, loading, error } = useSuspenseQuery(GET_ORDERS, {
+    fetchPolicy: "no-cache"
+  })
 
   if (loading) {
     return <p style={{ textAlign: "center" }}>Loading orders...</p>

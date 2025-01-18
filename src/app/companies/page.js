@@ -7,7 +7,9 @@ import Link from "next/link"
 import CompanyListItem from "../components/cards/companies/CompanyListItem"
 
 export default function CompaniesPage() {
-  const { data, loading, error } = useSuspenseQuery(GET_COMPANIES)
+  const { data, loading, error } = useSuspenseQuery(GET_COMPANIES, {
+    fetchPolicy: "no-cache"
+  })
 
   if (loading) {
     return <p style={{ textAlign: "center" }}>Loading companies...</p>
