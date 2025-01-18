@@ -1,14 +1,13 @@
 "use client"
-
-import React, { createContext, useState, useContext } from "react"
+import { createContext, useContext, useState } from "react"
 
 const DrawerContext = createContext()
 
 export const DrawerProvider = ({ children }) => {
   const [drawerOpen, setDrawerOpen] = useState(false)
 
-  const toggleDrawer = (newOpen) => {
-    setDrawerOpen(newOpen)
+  const toggleDrawer = (open) => {
+    setDrawerOpen(open)
   }
 
   return (
@@ -18,4 +17,10 @@ export const DrawerProvider = ({ children }) => {
   )
 }
 
-export const useDrawer = () => useContext(DrawerContext)
+export const useDrawer = () => {
+  const context = useContext(DrawerContext)
+  if (!context) {
+    throw new Error("useDrawer must be used within a DrawerProvider")
+  }
+  return context
+}

@@ -22,11 +22,11 @@ const ApplicationDrawerItem = ({
   const [open, setOpen] = useState(false)
 
   const handleOpen = (event) => {
-    // Prevent default drawer close behavior for expandable items
     if (subItems) {
       event.stopPropagation()
       setOpen(!open)
     } else {
+      console.log("Closing drawer for:", primary)
       handleDrawerClose()
     }
   }
@@ -47,14 +47,19 @@ const ApplicationDrawerItem = ({
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             {subItems.map((subItem) => (
-              <div key={subItem.primary} style={{ display: "flex" }}>
-                <Link href={subItem.href} passHref>
-                  <ListItemButton onClick={handleDrawerClose} sx={{ pl: 4 }}>
-                    <ListItemIcon>{subItem.icon}</ListItemIcon>
-                    <ListItemText secondary={subItem.primary} />
-                  </ListItemButton>
-                </Link>
-              </div>
+              <ListItemButton
+                key={subItem.primary}
+                component={Link}
+                href={subItem.href}
+                onClick={() => {
+                  console.log("Closing drawer for sub-item:", subItem.primary)
+                  handleDrawerClose()
+                }}
+                sx={{ pl: 4 }}
+              >
+                <ListItemIcon>{subItem.icon}</ListItemIcon>
+                <ListItemText secondary={subItem.primary} />
+              </ListItemButton>
             ))}
           </List>
         </Collapse>

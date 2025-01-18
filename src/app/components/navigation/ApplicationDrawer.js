@@ -3,7 +3,6 @@ import React from "react"
 import Box from "@mui/material/Box"
 import Drawer from "@mui/material/Drawer"
 import List from "@mui/material/List"
-import Divider from "@mui/material/Divider"
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined"
 import PersonPinOutlinedIcon from "@mui/icons-material/PersonPinOutlined"
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined"
@@ -11,11 +10,15 @@ import AddIcon from "@mui/icons-material/Add"
 import SearchIcon from "@mui/icons-material/Search"
 import BusinessIcon from "@mui/icons-material/Business"
 import { useDrawer } from "../../context/DrawerContext"
-
-import ApplicationDrawerItem from "./ApplicationDrawerItem" // Adjust the path as necessary
+import ApplicationDrawerItem from "./ApplicationDrawerItem"
 
 const ApplicationDrawer = () => {
-  const { drawerOpen: open, toggleDrawer: onClose } = useDrawer()
+  const { drawerOpen: open, toggleDrawer } = useDrawer() // Get context values
+
+  const handleClose = () => {
+    toggleDrawer(false) // Close the drawer
+  }
+
   const menu1 = [
     {
       icon: <SellOutlinedIcon />,
@@ -84,16 +87,15 @@ const ApplicationDrawer = () => {
   ]
 
   const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={onClose}>
+    <Box sx={{ width: 250 }} role="presentation">
       <List>
         {menu1.map((item, index) => (
           <ApplicationDrawerItem
             key={index}
-            href={item.href}
             icon={item.icon}
             primary={item.primary}
-            subItems={item.subItems} // Pass sub-items for collapsible items
-            handleDrawerClose={onClose}
+            subItems={item.subItems}
+            handleDrawerClose={handleClose}
           />
         ))}
       </List>
@@ -101,7 +103,13 @@ const ApplicationDrawer = () => {
   )
 
   return (
-    <Drawer open={open} onClose={onClose}>
+    <Drawer
+      open={open}
+      onClose={handleClose} // Close drawer when clicking outside
+      ModalProps={{
+        keepMounted: true, // Keeps the modal mounted for better performance
+      }}
+    >
       {DrawerList}
     </Drawer>
   )
