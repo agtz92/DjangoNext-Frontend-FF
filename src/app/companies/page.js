@@ -3,10 +3,13 @@ import React from "react"
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr"
 import { GET_COMPANIES } from "../api/graphql"
 import { List, ListItem, ListItemText, Divider } from "@mui/material"
+import { useTheme } from "@mui/material/styles"
 import Link from "next/link"
 import CompanyListItem from "../components/cards/companies/CompanyListItem"
 
 export default function CompaniesPage() {
+  const theme = useTheme()
+
   const { data, loading, error } = useSuspenseQuery(GET_COMPANIES, {
     fetchPolicy: "no-cache"
   })
@@ -26,7 +29,7 @@ export default function CompaniesPage() {
   const companies = data.companies || []
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ color: theme.palette.text.primary, padding: "20px" }}>
       <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Companies</h1>
       <List
         sx={{

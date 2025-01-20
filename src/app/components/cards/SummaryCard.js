@@ -13,7 +13,7 @@ const SummaryCard = ({ bgcolor, avatarText, title, content }) => {
         }
       />
       <CardContent>
-        <h1 style={{ width: "100%", textAlign: "center" }}>{content}</h1>
+        <h1 style={{ width: "100%", textAlign: "center"}} >{content}</h1>
       </CardContent>
     </Card>
   )

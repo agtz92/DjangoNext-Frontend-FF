@@ -1,7 +1,7 @@
 import React from "react"
 import { getClient } from "@/lib/apolloClient"
 import { GET_ORDER_BY_ID } from "../../api/graphql"
-import { List, ListItem, ListItemText } from "@mui/material"
+import { List, ListItem, ListItemText, Typography } from "@mui/material"
 import Link from "next/link"
 import DeleteOrderButton from "@/app/components/buttons/DeleteOrderButton"
 
@@ -11,7 +11,7 @@ export default async function OrderDetailPage({ params }) {
   let order = null
 
   try {
-    const client = getClient() 
+    const client = getClient()
     const { data } = await client.query({
       query: GET_ORDER_BY_ID,
       variables: { id },
@@ -39,9 +39,12 @@ export default async function OrderDetailPage({ params }) {
     console.error("Failed to fetch order details:", error)
     return (
       <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
-        <h1 style={{ textAlign: "center", color: "red" }}>Error Loading Order</h1>
+        <h1 style={{ textAlign: "center", color: "red" }}>
+          Error Loading Order
+        </h1>
         <p style={{ textAlign: "center" }}>
-          Something went wrong while fetching the order details. Please try again later.
+          Something went wrong while fetching the order details. Please try
+          again later.
         </p>
         <Link
           href="/orders"
@@ -55,21 +58,46 @@ export default async function OrderDetailPage({ params }) {
 
   return (
     <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
-      <h1 style={{ textAlign: "center" }}>Order #{order.id}</h1>
+      <Typography
+        variant="h3"
+        component="h1"
+        color="text.primary"
+        sx={{ textAlign: "center" }}
+      >
+        Order #{order.id}
+      </Typography>
 
       <div style={{ marginBottom: "20px", textAlign: "center" }}>
-        <p>
+        <Typography
+          variant="body1"
+          component="p"
+          color="text.highlight"
+          sx={{ textAlign: "center" }}
+        >
           <strong>Empresa:</strong> {order.customer.company?.name || "Unknown"}
-        </p>
-        <p>
+        </Typography>
+        <Typography
+          variant="body1"
+          component="p"
+          color="text.highlight"
+          sx={{ textAlign: "center" }}
+        >
           <strong>Customer:</strong> {order.customer.name || "Unknown"}
-        </p>
-        <p>
-          <strong>Order Date:</strong> {new Date(order.createdAt).toLocaleString()}
-        </p>
+        </Typography>
+        <Typography
+          variant="body1"
+          component="p"
+          color="text.highlight"
+          sx={{ textAlign: "center" }}
+        >
+          <strong>Order Date:</strong>{" "}
+          {new Date(order.createdAt).toLocaleString()}
+        </Typography>
       </div>
 
-      <h3>Order Items</h3>
+      <Typography variant="h4" component="h2" color="text.primary">
+        Order Items
+      </Typography>
       <List
         sx={{
           width: "100%",
@@ -84,10 +112,23 @@ export default async function OrderDetailPage({ params }) {
           order.items.map((item, index) => (
             <ListItem alignItems="flex-start" key={index}>
               <ListItemText
-                primary={`${item.quantity} x ${item.product.name}`}
-                secondary={`Price: $${item.price} | Total: $${
-                  item.quantity * item.price
-                }`}
+                primary={
+                  <Typography
+                    variant="h6"
+                    component="span"
+                    color="text.primary"
+                  >
+                    {item.quantity} x {item.product.name}
+                  </Typography>
+                }
+                secondary={
+                  <Typography
+                    variant="h6"
+                    component="span"
+                    color="text.primary"
+                  >${item.quantity * item.price}
+                  </Typography>
+                }
               />
             </ListItem>
           ))
@@ -98,14 +139,19 @@ export default async function OrderDetailPage({ params }) {
         )}
       </List>
 
-      <h3 style={{ textAlign: "center", marginTop: "20px" }}>
+      <Typography
+        variant="h5"
+        component="h3"
+        color="text.primary"
+        sx={{ textAlign: "center" }}
+      >
         Total Price: $
         {order.items.reduce(
           (total, item) => total + item.price * item.quantity,
           0
         )}
-      </h3>
-      
+      </Typography>
+
       <DeleteOrderButton orderId={order.id} />
 
       <Link
@@ -116,7 +162,14 @@ export default async function OrderDetailPage({ params }) {
           marginTop: "20px",
         }}
       >
-        Back to Orders
+        <Typography
+          variant="h6"
+          component="h4"
+          color="text.primary"
+          sx={{ textAlign: "center" }}
+        >
+          Back to Orders
+        </Typography>
       </Link>
     </div>
   )

@@ -10,6 +10,7 @@ import Link from "next/link"
 
 export default async function CustomerDetailPage({ params }) {
   const { id } = await params
+  
 
   let customer = null
 

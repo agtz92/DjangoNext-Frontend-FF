@@ -29,7 +29,7 @@ const ApplicationBar = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 , color:"white"}}>
             Portal Mamalon 2.0
           </Typography>
           <IconButton sx={{ ml: 1 }} onClick={toggleDarkMode} color="inherit">

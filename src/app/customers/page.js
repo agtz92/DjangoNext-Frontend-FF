@@ -1,11 +1,13 @@
 "use client"
 import React from "react"
 import { List } from "@mui/material"
+import { useTheme } from "@mui/material/styles"
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr"
 import { GET_CUSTOMERS } from "../api/graphql" 
 import CustomerListItem from "../components/cards/customers/CustomerListItem"
 
 export default function CustomersPage() {
+  const theme = useTheme()
   const { data, loading, error } = useSuspenseQuery(GET_CUSTOMERS, {
     fetchPolicy: "no-cache"
   })
@@ -25,7 +27,7 @@ export default function CustomersPage() {
   const customers = data.customers || []
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ color: theme.palette.text.primary, padding: "20px" }}>
       <h1
         style={{
           textAlign: "center",

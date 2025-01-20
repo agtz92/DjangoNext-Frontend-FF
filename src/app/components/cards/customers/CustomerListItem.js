@@ -22,18 +22,19 @@ const CustomerListItem = ({ customer }) => {
           primary={
             <React.Fragment>
               <Typography
-                variant="body2"
+                variant="body1"
                 component="span"
-                color="textSecondary"
+                color="text.primary"
                 style={{ fontWeight: "bold" }}
               >
                 {customer.company?.name || "No company available"}
               </Typography>
               <br />
               <Typography
-                variant="body1"
+                variant="h6"
                 component="span"
-                style={{ color: "#333", fontWeight: "bold" }}
+                color="text.primary"
+                style={{fontWeight: "bold" }}
               >
                 {customer.name}
               </Typography>
@@ -44,27 +45,20 @@ const CustomerListItem = ({ customer }) => {
               <Typography
                 variant="body2"
                 component="span"
-                style={{ display: "block", color: "gray" }}
+                color= "text.highlight"
               >
                 {customer.email}
               </Typography>
               <Typography
                 variant="body2"
                 component="span"
-                style={{ display: "block", color: "gray" }}
+                color= "text.highlight"
+                style={{ display: "block"}}
               >
                 {customer.phone || "No phone available"}
               </Typography>
             </React.Fragment>
           }
-          primaryTypographyProps={{
-            fontWeight: "bold",
-            color: "#333",
-          }}
-          secondaryTypographyProps={{
-            fontSize: "14px",
-            color: "gray",
-          }}
           sx={{
             whiteSpace: "pre-wrap", // Ensures multiline support
           }}
