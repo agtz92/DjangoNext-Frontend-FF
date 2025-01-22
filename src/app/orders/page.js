@@ -5,6 +5,7 @@ import { useTheme } from "@mui/material/styles"
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr"
 import { GET_ORDERS } from "../api/graphql" 
 import OrderListItem from "../components/cards/orders/OrderListItem"
+import LoadingBackdrop from "../components/misc/LoadingBackdrop"
 
 export default function ProductsPage() {
   const theme = useTheme()
@@ -13,7 +14,7 @@ export default function ProductsPage() {
   })
 
   if (loading) {
-    return <p style={{ textAlign: "center" }}>Loading orders...</p>
+    return <LoadingBackdrop/>
   }
 
   if (error) {

@@ -6,6 +6,7 @@ import { List, ListItem, ListItemText, Divider } from "@mui/material"
 import { useTheme } from "@mui/material/styles"
 import Link from "next/link"
 import CompanyListItem from "../components/cards/companies/CompanyListItem"
+import LoadingBackdrop from "../components/misc/LoadingBackdrop"
 
 export default function CompaniesPage() {
   const theme = useTheme()
@@ -15,7 +16,7 @@ export default function CompaniesPage() {
   })
 
   if (loading) {
-    return <p style={{ textAlign: "center" }}>Loading companies...</p>
+    return <LoadingBackdrop/>
   }
 
   if (error) {

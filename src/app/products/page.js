@@ -6,6 +6,7 @@ import { useTheme } from "@mui/material/styles"
 import { GET_PRODUCTS } from "../api/graphql" 
 import ProductListItem from "../components/cards/products/ProductListItem"
 import { Padding } from "@mui/icons-material"
+import LoadingBackdrop from "../components/misc/LoadingBackdrop"
 
 export default function ProductsPage() {
   const theme = useTheme()
@@ -14,7 +15,7 @@ export default function ProductsPage() {
   })
 
   if (loading) {
-    return <p style={{ textAlign: "center" }}>Loading products...</p>
+    return <LoadingBackdrop/>
   }
 
   if (error) {
