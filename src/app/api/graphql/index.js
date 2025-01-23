@@ -6,3 +6,6 @@ export * from "./orders/queries"
 export * from "./orders/mutations"
 export * from "./companies/queries"
 export * from "./companies/mutations"
+export * from "./users/queries"
+export * from "./users/mutations"
+
