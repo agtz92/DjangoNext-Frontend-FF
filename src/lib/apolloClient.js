@@ -2,7 +2,7 @@ import {
   registerApolloClient,
   InMemoryCache,
 } from "@apollo/experimental-nextjs-app-support"
-import { ApolloClient, HttpLink, from  } from "@apollo/client"
+import { ApolloClient, HttpLink } from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
 import { onError } from "@apollo/client/link/error"
 
@@ -78,13 +78,8 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(() => {
   })
 
   // Combine errorLink, authLink, csrfLink, and httpLink
-/*   return new ApolloClient({
-    cache: new InMemoryCache(),
-    link: from([errorLink, authLink, csrfLink.concat(httpLink)]), // Ensure authLink is included
-  })
-}) */
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link: from([errorLink, csrfLink.concat(httpLink)]), // Ensure authLink is included
+    link: from([errorLink, authLink, csrfLink.concat(httpLink)]), // Ensure authLink is included
   })
 })

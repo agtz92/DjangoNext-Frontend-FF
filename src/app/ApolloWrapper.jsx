@@ -1,6 +1,6 @@
 "use client"
 
-import { HttpLink, ApolloLink } from "@apollo/client"
+import { ApolloClient, HttpLink, ApolloLink } from "@apollo/client"
 import {
   NextSSRApolloClient,
   ApolloNextAppProvider,
@@ -104,7 +104,7 @@ const csrfLink = setContext((_, { headers }) => {
 function makeClient() {
   const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://127.0.0.1:8000/gql",
-    // credentials: "include", // Include cookies for CSRF and refresh tokens
+    credentials: "include", // Include cookies for CSRF and refresh tokens
   })
 
   return new NextSSRApolloClient({
