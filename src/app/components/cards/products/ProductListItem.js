@@ -12,30 +12,33 @@ import Link from "next/link"
 const ProductListItem = ({ item }) => {
   return (
     <React.Fragment key={item.id}>
-      <ListItem alignItems="flex-start">
-        <ListItemAvatar>
-          <Avatar
-            alt={item.name}
-            src={item.image || "/static/images/avatar/placeholder.jpg"} // Placeholder for an item image
-          />
-        </ListItemAvatar>
-        <Link href={`/products/${item.sku}`} passHref>
+      <Link href={`/products/${item.sku}`} passHref>
+        <ListItem alignItems="flex-start">
+          <ListItemAvatar>
+            <Avatar
+              alt={item.name}
+              src={item.image || "/static/images/avatar/placeholder.jpg"} // Placeholder for an item image
+            />
+          </ListItemAvatar>
+
           <ListItemText
             primary={
               <>
-                <Typography variant="h6" component="p" color="text.primary">{item.name}</Typography>
+                <Typography variant="h6" component="span" color="text.primary">
+                  {item.name}
+                </Typography>
               </>
             }
             secondary={
               <>
-                <Typography variant="body1" component="p" color="text.highlight">
+                <Typography variant="body1" component="span" color="text.highlight">
                   ${item.basePrice} USD
                 </Typography>
               </>
             }
           />
-        </Link>
-      </ListItem>
+        </ListItem>
+      </Link>
       <Divider variant="middle" />
     </React.Fragment>
   )

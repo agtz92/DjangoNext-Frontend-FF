@@ -28,7 +28,7 @@ const OrderListItem = ({ order }) => {
               </Typography>
             }
             secondary={
-              <Typography variant="body1" component="p" color="text.highlight">
+              <Typography variant="body1" component="span" color="text.highlight">
                 Customer: {order.customer.name} | Total: $
                 {order.items.reduce(
                   (total, item) => total + item.quantity * item.price,
