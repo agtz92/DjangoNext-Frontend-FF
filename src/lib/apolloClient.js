@@ -12,20 +12,10 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     graphQLErrors.forEach((error) => {
       console.error(`[GraphQL Error]: ${error.message}`)
 
-      // UNAUTHENTICATED error handling (Commented Out)
-      // if (error.extensions.code === "UNAUTHENTICATED") {
-      //   console.warn("User is unauthenticated. Attempting to refresh token.")
-
-      //   return fetch("/api/refresh", {
-      //     method: "POST",
-      //     credentials: "include",
-      //   })
-      //     .then(() => forward(operation))
-      //     .catch((refreshError) => {
-      //       console.error("Token refresh failed:", refreshError)
-      //       return forward(operation) // Retry even if refresh fails
-      //     })
-      // }
+      // UNAUTHENTICATED error handling (Optional)
+      if (error.extensions.code === "UNAUTHENTICATED") {
+        console.warn("User is unauthenticated.")
+      }
     })
   }
 
@@ -34,23 +24,23 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 })
 
-// Authorization middleware (Commented Out)
-// const authLink = setContext((_, { headers }) => {
-//   if (typeof window !== "undefined") {
-//     const jwtToken = document.cookie
-//       .split("; ")
-//       .find((row) => row.startsWith("jwt="))
-//       ?.split("=")[1]
+// Authorization middleware to include token in the headers
+const authLink = setContext((_, { headers }) => {
+  if (typeof window === "undefined") {
+    // Skip adding the Authorization header during SSR
+    return { headers }
+  }
 
-//     return {
-//       headers: {
-//         ...headers,
-//         Authorization: jwtToken ? `JWT ${jwtToken}` : "",
-//       },
-//     }
-//   }
-//   return { headers }
-// })
+  // Get the token from localStorage
+  const token = localStorage.getItem("authToken")
+
+  return {
+    headers: {
+      ...headers,
+      Authorization: token ? `JWT ${token}` : "", // Attach the token
+    },
+  }
+})
 
 // CSRF token middleware
 const csrfLink = setContext((_, { headers }) => {
@@ -72,17 +62,20 @@ const csrfLink = setContext((_, { headers }) => {
   }
 })
 
-
 // Register Apollo Client
 export const { getClient, query, PreloadQuery } = registerApolloClient(() => {
-  console.log("Register Apollo DEBUG: ", registerApolloClient) // Should log a function, otherwise there's a problem
+  console.log("Register Apollo DEBUG: ", registerApolloClient) // Debugging purpose
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link: csrfLink.concat(
-      new HttpLink({
-        uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://127.0.0.1:8000/gql", // Absolute URL required
-        fetchOptions: { cache: "no-store" }, // Disable result caching for dynamic SSR
-      })
+    link: errorLink.concat(
+      authLink.concat(
+        csrfLink.concat(
+          new HttpLink({
+            uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://127.0.0.1:8000/gql", // Absolute URL required
+            fetchOptions: { cache: "no-store" }, // Disable result caching for dynamic SSR
+          })
+        )
+      )
     ),
   })
 })

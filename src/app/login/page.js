@@ -7,7 +7,6 @@ import {
   Box,
   Typography,
   Alert,
-  CircularProgress,
 } from "@mui/material"
 import { useMutation } from "@apollo/client"
 import { LOGIN } from "../api/graphql"
@@ -20,15 +19,12 @@ export default function LoginPage() {
   const [formLoading, setFormLoading] = useState(false) // Loading state
   const [loggedIn, setLoggedIn] = useState(false) // Tracks login state
 
-  const [login, {loading}] = useMutation(LOGIN, {
-    onError(err) {
-        err.graphQLErrors.forEach((errorObj) => {
-            if (errorObj.message.includes(INVALID_CREDENTIALS_ERROR)) {
-                setErrors({ ...errors, [INVALID_CREDS]: INVALID_CREDENTIALS_ERROR }); // setting custom errors
-            }
-        });
-    }
-})
+  const [login] = useMutation(LOGIN, {
+    onError: (err) => {
+      console.error("GraphQL Error:", err) // Log error details
+      setFormError("An error occurred. Please check your credentials.")
+    },
+  })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -39,19 +35,28 @@ export default function LoginPage() {
       const { data } = await login({
         variables: { username: userInput, password: userPassword },
         context: {
-          fetchOptions: { credentials: "include" }, // Include cookies in the request
+          //fetchOptions: { credentials: "include" }, // Include cookies in the request
         },
       })
 
-      if (data?.tokenAuth.success) {
-        //alert("Login successful!")
-        console.log("data: ", data)
+      // Log the response from the server
+      console.log("Server Response:", data)
+
+      if (data?.tokenAuth?.success) {
+
+        const authToken = data.tokenAuth.token.token 
+        localStorage.setItem("authToken", authToken)
+        
         setUserInput("")
         setUserPassword("")
         setFirstName(data.tokenAuth.user.firstName)
         setLoggedIn(true) // Set login state
       } else {
-        setFormError("Invalid credentials. Please try again.")
+        setFormError(
+          data?.tokenAuth?.errors
+            ? Object.values(data.tokenAuth.errors).join(", ")
+            : "Invalid credentials. Please try again."
+        )
       }
     } catch (err) {
       console.error("Login failed:", err)
@@ -79,7 +84,7 @@ export default function LoginPage() {
       {!loggedIn ? (
         <form onSubmit={handleSubmit}>
           <TextField
-            label="Username"
+            label="Username or Email"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             fullWidth
@@ -120,7 +125,7 @@ export default function LoginPage() {
       ) : (
         <Box>
           <Typography variant="h6" textAlign="center" gutterBottom>
-            Welcome back! {firstName}
+            Welcome back, {firstName}!
           </Typography>
           <Box display="flex" justifyContent="center" mt={3}>
             <Button variant="contained" color="primary" onClick={handleLogout}>

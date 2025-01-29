@@ -18,12 +18,14 @@ export const GET_USERS = gql`
 `
 
 export const GET_ME = gql`
-  query getMe {
-    me {
-      username
-      firstName
-      lastName
-      email
+  query MeQuery{
+      me{
+        username
+        firstName
+        lastName
+        isActive
+        email
+        verified
+      }
     }
-  }
 `

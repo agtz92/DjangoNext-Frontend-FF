@@ -28,62 +28,23 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 })
 
-// Authorization middleware with token refresh mechanism (Commented Out)
-// const authLink = setContext(async (_, { headers }) => {
-//   let jwtToken = document.cookie
-//     .split("; ")
-//     .find((row) => row.startsWith("JWT="))
-//     ?.split("=")[1]
+// Authorization middleware to attach token from localStorage
+const authLink = setContext((_, { headers }) => {
+  if (typeof window === "undefined") {
+    // Skip adding the Authorization header during SSR
+    return { headers }
+  }
 
-//   const refreshToken = document.cookie
-//     .split("; ")
-//     .find((row) => row.startsWith("JWT-refresh-token="))
-//     ?.split("=")[1]
+  // Get the token from localStorage
+  const token = localStorage.getItem("authToken")
 
-//   if (jwtToken) {
-//     const payload = JSON.parse(atob(jwtToken.split(".")[1]))
-//     const isTokenExpired = payload.exp * 1000 < Date.now()
-
-//     if (isTokenExpired && refreshToken) {
-//       console.warn("JWT expired. Attempting to refresh the token.")
-//       try {
-//         const response = await fetch("/gql", {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           credentials: "include", // Include cookies for the refresh token
-//           body: JSON.stringify({
-//             query: `
-//               mutation RefreshToken {
-//                 refreshToken(refreshToken: "${refreshToken}") {
-//                   token
-//                 }
-//               }
-//             `,
-//           }),
-//         })
-
-//         const data = await response.json()
-//         jwtToken = data?.data?.refreshToken?.token
-
-//         // Update the JWT cookie with the new token
-//         if (jwtToken) {
-//           document.cookie = `JWT=${jwtToken}; Path=/; SameSite=Lax; HttpOnly=false`
-//         }
-//       } catch (err) {
-//         console.error("Failed to refresh token:", err)
-//       }
-//     }
-//   }
-
-//   return {
-//     headers: {
-//       ...headers,
-//       Authorization: jwtToken ? `JWT ${jwtToken}` : "",
-//     },
-//   }
-// })
+  return {
+    headers: {
+      ...headers,
+      Authorization: token ? `JWT ${token}` : "", // Attach the token
+    },
+  }
+})
 
 // CSRF middleware
 const csrfLink = setContext((_, { headers }) => {
@@ -105,20 +66,23 @@ const csrfLink = setContext((_, { headers }) => {
   }
 })
 
-
 // Create Apollo Client
 function makeClient() {
   const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://127.0.0.1:8000/gql",
-    //credentials: "include", // Include cookies for CSRF
+    // credentials: "include", // Include cookies for CSRF
   })
 
   return new NextSSRApolloClient({
     cache: new NextSSRInMemoryCache(), // Use the SSR cache for Next.js
-    link:
+    link: ApolloLink.from([
+      errorLink, // Error handling
+      authLink, // Add token from localStorage
+      csrfLink, // Add CSRF header if available
       typeof window === "undefined"
-        ? ApolloLink.from([new SSRMultipartLink({ stripDefer: true }), csrfLink.concat(httpLink)])
-        : csrfLink.concat(httpLink), // Combine links for the browser
+        ? new SSRMultipartLink({ stripDefer: true }).concat(httpLink) // SSR-specific link
+        : httpLink, // Browser-specific link
+    ]),
   })
 }
 

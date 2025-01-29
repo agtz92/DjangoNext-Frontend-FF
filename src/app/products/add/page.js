@@ -18,19 +18,26 @@ export default function AddProductPage() {
     console.log("Submitting variables:", { name, sku, basePrice, description })
 
     try {
-      await createProduct({
+      const response = await createProduct({
         variables: {
           name,
           sku,
           basePrice: parseFloat(basePrice), // Ensure it's a float
-          description, // Include description
+          description,
         },
       })
-      alert("Product created successfully!")
-      setName("")
-      setSku("")
-      setBasePrice("")
-      setDescription("") // Reset the description field
+
+      console.log("GraphQL Response:", response)
+
+      if (response?.data?.createProduct?.success) {
+        alert("Product created successfully!")
+        setName("")
+        setSku("")
+        setBasePrice("")
+        setDescription("")
+      } else {
+        alert("Mutation completed, but product was not created.")
+      }
     } catch (err) {
       console.error("Error creating product:", err)
       alert("Failed to create product. Please try again.")
@@ -104,7 +111,7 @@ export default function AddProductPage() {
           {error.message}
         </Typography>
       )}
-      {data && (
+      {data && data.createProduct && data.createProduct.product && (
         <Typography color="success" mt={2}>
           Product {data.createProduct.product.name} added successfully!
         </Typography>
