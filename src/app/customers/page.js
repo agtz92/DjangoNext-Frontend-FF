@@ -1,20 +1,22 @@
 "use client"
 import React from "react"
-import { List } from "@mui/material"
+import { Container, List } from "@mui/material"
 import { useTheme } from "@mui/material/styles"
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr"
-import { GET_CUSTOMERS } from "../api/graphql" 
-import CustomerListItem from "../components/cards/customers/CustomerListItem"
+import { GET_CUSTOMERS } from "../api/graphql"
+import Typography from "@mui/material/Typography"
+import GenericTable from "../components/tables/GenericTable"
 import LoadingBackdrop from "../components/misc/LoadingBackdrop"
+import Link from "next/link"
 
 export default function CustomersPage() {
   const theme = useTheme()
   const { data, loading, error } = useSuspenseQuery(GET_CUSTOMERS, {
-    fetchPolicy: "no-cache"
+    fetchPolicy: "no-cache",
   })
 
   if (loading) {
-    return <LoadingBackdrop/>
+    return <LoadingBackdrop />
   }
 
   if (error) {
@@ -27,6 +29,43 @@ export default function CustomersPage() {
 
   const customers = data.customers || []
 
+  const columns = [
+    {
+      field: "name",
+      label: "Customer Name",
+      maxWidth: 100,
+      // Custom render to wrap the name in a link with bold typography
+      render: (value, row) => (
+        <Link href={`/customers/${row.id}`} passHref legacyBehavior>
+          <a style={{ textDecoration: "none", color: "inherit" }}>
+            <Typography sx={{ fontWeight: "bold" }}>{value}</Typography>
+          </a>
+        </Link>
+      ),
+    },
+    {
+      field: "company",
+      label: "Company",
+      align: "right",
+      maxWidth: 40,
+      // If the company is not available, show a default message
+      render: (value) => (value ? value.name : "No company available"),
+    },
+    {
+      field: "email",
+      label: "Email",
+      align: "right",
+      maxWidth: 50,
+    },
+    {
+      field: "phone",
+      label: "Phone",
+      align: "right",
+      maxWidth: 40,
+      render: (value) => value || "No phone available",
+    },
+  ]
+
   return (
     <div style={{ color: theme.palette.text.primary, padding: "20px" }}>
       <h1
@@ -38,20 +77,9 @@ export default function CustomersPage() {
         Customers
       </h1>
 
-      <List
-        sx={{
-          width: "100%",
-          maxWidth: 800,
-          margin: "0 auto", // Center the list
-          bgcolor: "background.paper",
-          borderRadius: "8px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        {customers.map((customer) => (
-          <CustomerListItem key={customer.id} customer={customer} />
-        ))}
-      </List>
+      <Container>
+        <GenericTable data={customers} columns={columns} />
+      </Container>
     </div>
   )
 }

@@ -2,21 +2,21 @@
 import React from "react"
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr"
 import { GET_COMPANIES } from "../api/graphql"
-import { List, ListItem, ListItemText, Divider } from "@mui/material"
+import { Container, Typography } from "@mui/material"
 import { useTheme } from "@mui/material/styles"
-import Link from "next/link"
-import CompanyListItem from "../components/cards/companies/CompanyListItem"
 import LoadingBackdrop from "../components/misc/LoadingBackdrop"
+import Link from "next/link"
+import GenericTable from "../components/tables/GenericTable"
 
 export default function CompaniesPage() {
   const theme = useTheme()
 
   const { data, loading, error } = useSuspenseQuery(GET_COMPANIES, {
-    fetchPolicy: "no-cache"
+    fetchPolicy: "no-cache",
   })
 
   if (loading) {
-    return <LoadingBackdrop/>
+    return <LoadingBackdrop />
   }
 
   if (error) {
@@ -29,28 +29,39 @@ export default function CompaniesPage() {
 
   const companies = data.companies || []
 
+  const columns = [
+    {
+      field: "name",
+      label: "Nombre",
+      // Custom render to wrap the name in a link with bold typography
+      render: (value, row) => (
+        <Link href={`/companies/${row.id}`} passHref legacyBehavior>
+          <a style={{ textDecoration: "none", color: "inherit" }}>
+            <Typography sx={{ fontWeight: "bold" }}>{value}</Typography>
+          </a>
+        </Link>
+      ),
+    },
+    {
+      field: "businessLine",
+      label: "Giro",
+      align: "right",
+      maxWidth: 40,
+    },
+    {
+      field: "state",
+      label: "Estado",
+      align: "right",
+      maxWidth: 40,
+    },
+  ]
+
   return (
     <div style={{ color: theme.palette.text.primary, padding: "20px" }}>
       <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Companies</h1>
-      <List
-        sx={{
-          width: "100%",
-          maxWidth: 800,
-          margin: "0 auto",
-          bgcolor: "background.paper",
-          borderRadius: "8px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        {companies.map((company) => (
-          <React.Fragment key={company.id}>
-            <Link href={`/companies/${company.id}`} passHref>
-              <CompanyListItem key={company.id} company={company} />
-            </Link>
-            <Divider variant="middle" />
-          </React.Fragment>
-        ))}
-      </List>
+      <Container>
+        <GenericTable data={companies} columns={columns} />
+      </Container>
     </div>
   )
 }
