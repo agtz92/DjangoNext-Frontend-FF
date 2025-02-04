@@ -1,15 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import {
-  TextField,
-  Button,
-  Box,
-  Typography,
-  Alert,
-} from "@mui/material"
+import { TextField, Button, Box, Typography, Alert } from "@mui/material"
 import { useMutation } from "@apollo/client"
 import { LOGIN } from "../api/graphql"
+import { useAuth } from "../context/AuthContext"
 
 export default function LoginPage() {
   const [userInput, setUserInput] = useState("") // Username or email input
@@ -18,6 +13,7 @@ export default function LoginPage() {
   const [formError, setFormError] = useState("") // Error messages
   const [formLoading, setFormLoading] = useState(false) // Loading state
   const [loggedIn, setLoggedIn] = useState(false) // Tracks login state
+  const { refreshUser } = useAuth()
 
   const [login] = useMutation(LOGIN, {
     onError: (err) => {
@@ -43,14 +39,14 @@ export default function LoginPage() {
       console.log("Server Response:", data)
 
       if (data?.tokenAuth?.success) {
-
-        const authToken = data.tokenAuth.token.token 
+        const authToken = data.tokenAuth.token.token
         localStorage.setItem("authToken", authToken)
-        
+
         setUserInput("")
         setUserPassword("")
         setFirstName(data.tokenAuth.user.firstName)
         setLoggedIn(true) // Set login state
+        await refreshUser()
       } else {
         setFormError(
           data?.tokenAuth?.errors

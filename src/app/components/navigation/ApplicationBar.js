@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
 import IconButton from "@mui/material/IconButton"
 import MenuIcon from "@mui/icons-material/Menu"
+import AuthButton from "../buttons/AuthButton"
 import { useDarkMode } from "@/app/context/DarkModeContext"
 import Brightness4Icon from "@mui/icons-material/Brightness4"
 import Brightness7Icon from "@mui/icons-material/Brightness7"
@@ -40,9 +41,7 @@ const ApplicationBar = () => {
           <IconButton sx={{ ml: 1 }} onClick={toggleDarkMode} color="inherit">
             {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
-          <Link href="/login">
-            <Button color="inherit">Login</Button>
-          </Link>
+          <AuthButton/>
         </Toolbar>
       </AppBar>
     </Box>
