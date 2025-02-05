@@ -7,6 +7,7 @@ import { ShoppingCart } from "@mui/icons-material"
 import CustomerCard from "@/app/components/cards/CustomerCard"
 import SummaryCard from "@/app/components/cards/SummaryCard"
 import Link from "next/link"
+import { Height } from "@mui/icons-material"
 
 export default async function CustomerDetailPage({ params }) {
   const { id } = await params
@@ -83,6 +84,7 @@ export default async function CustomerDetailPage({ params }) {
         <Grid size={{ xs: 6, md: 4 }}>
           <CustomerCard
             empresa={`Empresa: ${customer.company?.name}` || "No company available"}
+            empresaId= {customer.company.id}
             subtitle={customer.name || "No name available."}
             email={`Email: ${customer.email || "No email available."}`}
             phone={`Phone: ${customer.phone || "No phone available."}`}

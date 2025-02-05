@@ -2,7 +2,7 @@
 import React from "react"
 import { getClient } from "@/lib/apolloClient"
 import { GET_COMPANY_BY_ID } from "../../api/graphql"
-import { Box, Typography } from "@mui/material"
+import { Box, Container, Typography } from "@mui/material"
 import Link from "next/link"
 import CompanyCustomersTable from "./CompanyCustomersTable" // Adjust the path as needed
 
@@ -84,7 +84,7 @@ export default async function CompanyDetailPage({ params }) {
   }
 
   return (
-    <Box sx={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+    <Container>
       <Typography
         variant="h5"
         align="center"
@@ -129,6 +129,6 @@ export default async function CompanyDetailPage({ params }) {
       >
         Back to Companies
       </Link>
-    </Box>
+    </Container>
   )
 }

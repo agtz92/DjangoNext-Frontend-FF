@@ -8,18 +8,31 @@ import {
   Button,
   Typography,
 } from "@mui/material"
+import Link from "next/link"
 
-const CustomerCard = ({ empresa, subtitle, phone, email, actionText }) => {
+const CustomerCard = ({
+  empresa,
+  subtitle,
+  phone,
+  email,
+  actionText,
+  empresaId,
+}) => {
   const handleActionClick = () => {
     alert("Button clicked!")
   }
 
   return (
-    <Card>
+    <Card sx={{ height: "100%", minHeight: "200px" }}>
       <CardContent>
-        <Typography gutterBottom sx={{ color: "text.secondary", fontSize: 14 }}>
-          {empresa}
-        </Typography>
+        <Link href={`/companies/${empresaId}`}>
+          <Typography
+            gutterBottom
+            sx={{ color: "text.highlight", fontSize: 14 }}
+          >
+            {empresa}
+          </Typography>
+        </Link>
         <Typography gutterBottom variant="h5" component="div">
           {subtitle}
         </Typography>

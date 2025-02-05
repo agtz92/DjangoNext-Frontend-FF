@@ -3,7 +3,7 @@ import { Card, CardHeader, CardContent, Avatar } from "@mui/material"
 
 const SummaryCard = ({ bgcolor, avatarText, title, content }) => {
   return (
-    <Card sx={{ minHeight: "200px" }}>
+    <Card sx={{ height:"100%", minHeight: "200px" }}>
       <CardHeader
         title={title}
         avatar={
