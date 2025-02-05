@@ -1,17 +1,17 @@
 import React from "react"
 import { getClient } from "@/lib/apolloClient"
 import { GET_CUSTOMER_BY_ID } from "../../api/graphql"
-import { Box, Avatar } from "@mui/material"
+import { Box, Avatar, Container, Typography } from "@mui/material"
 import Grid from "@mui/material/Grid2"
 import { ShoppingCart } from "@mui/icons-material"
 import CustomerCard from "@/app/components/cards/CustomerCard"
 import SummaryCard from "@/app/components/cards/SummaryCard"
 import Link from "next/link"
 import { Height } from "@mui/icons-material"
+import CustomerOrdersTable from "./CustomerOrdersTable"
 
 export default async function CustomerDetailPage({ params }) {
   const { id } = await params
-  
 
   let customer = null
 
@@ -83,8 +83,10 @@ export default async function CustomerDetailPage({ params }) {
       <Grid container spacing={2}>
         <Grid size={{ xs: 6, md: 4 }}>
           <CustomerCard
-            empresa={`Empresa: ${customer.company?.name}` || "No company available"}
-            empresaId= {customer.company.id}
+            empresa={
+              `Empresa: ${customer.company?.name}` || "No company available"
+            }
+            empresaId={customer.company.id}
             subtitle={customer.name || "No name available."}
             email={`Email: ${customer.email || "No email available."}`}
             phone={`Phone: ${customer.phone || "No phone available."}`}
@@ -116,6 +118,16 @@ export default async function CustomerDetailPage({ params }) {
           />
         </Grid>
       </Grid>
+      <Container sx={{marginTop:5}}>
+        {customer.orders.length > 0 ? (
+          <CustomerOrdersTable orders={customer.orders} />
+        ) : (
+          <Typography align="center" sx={{ padding: "10px" }}>
+            No orders associated with this customer.
+          </Typography>
+        )}
+      </Container>
+
       <Link
         href="/customers"
         style={{

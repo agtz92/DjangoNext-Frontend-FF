@@ -70,7 +70,14 @@ export default function ProductsPage() {
       label: "Created",
       align: "right",
       maxWidth: 150,
-      render: (value) => new Date(value).toLocaleDateString(),
+      render: (value) => {
+        const formattedDate = new Intl.DateTimeFormat("en-GB", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date(value));
+        return formattedDate;
+      },
     },
   ]
 

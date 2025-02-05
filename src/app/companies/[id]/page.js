@@ -5,6 +5,8 @@ import { GET_COMPANY_BY_ID } from "../../api/graphql"
 import { Box, Container, Typography } from "@mui/material"
 import Link from "next/link"
 import CompanyCustomersTable from "./CompanyCustomersTable" // Adjust the path as needed
+import SummaryCard from "@/app/components/cards/SummaryCard"
+import { ShoppingCart } from "@mui/icons-material"
 
 export default async function CompanyDetailPage({ params }) {
   const { id, loading, error } = await params
@@ -84,51 +86,59 @@ export default async function CompanyDetailPage({ params }) {
   }
 
   return (
-    <Container>
-      <Typography
-        variant="h5"
-        align="center"
-        color="primary"
-        sx={{ marginBottom: "20px" }}
-      >
-        Total Revenue: ${totalCompanyRevenue.toFixed(2)}
-      </Typography>
+    <>
+      <SummaryCard
+        bgcolor="#2D46B9"
+        title={
+          <Typography variant="h4" align="center">
+            {company.name}
+          </Typography>
+        }
+        content={
+          <>
+            <Typography
+              variant="h5"
+              component={"span"}
+              align="center"
+              color="primary"
+              sx={{ marginBottom: "20px" }}
+            >
+              Ventas Totales: ${totalCompanyRevenue.toFixed(2)}
+            </Typography>
+            <Typography>
+              <strong>Giro del Negocio:</strong> {company.businessLine || "N/A"}
+            </Typography>
+            <Typography>
+              <strong>Estado:</strong> {company.state || "N/A"}
+            </Typography>
+          </>
+        }
+      />
 
-      <Typography variant="h4" align="center">
-        {company.name}
-      </Typography>
-
-      <Box sx={{ marginBottom: "20px", textAlign: "center" }}>
-        <Typography>
-          <strong>Business Line:</strong> {company.businessLine || "N/A"}
+      <Container>
+        <Typography variant="h6" sx={{ marginBottom: "10px" }}>
+          Clientes
         </Typography>
-        <Typography>
-          <strong>State:</strong> {company.state || "N/A"}
-        </Typography>
-      </Box>
 
-      <Typography variant="h6" sx={{ marginBottom: "10px" }}>
-        Customers
-      </Typography>
+        {company.customers.length > 0 ? (
+          <CompanyCustomersTable customers={company.customers} />
+        ) : (
+          <Typography align="center" sx={{ padding: "10px" }}>
+            No customers associated with this company.
+          </Typography>
+        )}
 
-      {company.customers.length > 0 ? (
-        <CompanyCustomersTable customers={company.customers} />
-      ) : (
-        <Typography align="center" sx={{ padding: "10px" }}>
-          No customers associated with this company.
-        </Typography>
-      )}
-
-      <Link
-        href="/companies"
-        style={{
-          textAlign: "center",
-          display: "block",
-          marginTop: "20px",
-        }}
-      >
-        Back to Companies
-      </Link>
-    </Container>
+        <Link
+          href="/companies"
+          style={{
+            textAlign: "center",
+            display: "block",
+            marginTop: "20px",
+          }}
+        >
+          Back to Companies
+        </Link>
+      </Container>
+    </>
   )
 }
