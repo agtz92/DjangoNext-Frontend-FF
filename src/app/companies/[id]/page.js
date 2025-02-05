@@ -1,8 +1,10 @@
+// CompanyDetailPage.jsx (or .js)
 import React from "react"
 import { getClient } from "@/lib/apolloClient"
 import { GET_COMPANY_BY_ID } from "../../api/graphql"
-import { List, ListItem, ListItemText, Box, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import Link from "next/link"
+import CompanyCustomersTable from "./CompanyCustomersTable" // Adjust the path as needed
 
 export default async function CompanyDetailPage({ params }) {
   const { id, loading, error } = await params
@@ -11,7 +13,7 @@ export default async function CompanyDetailPage({ params }) {
   let totalCompanyRevenue = 0
 
   try {
-    const client = getClient() 
+    const client = getClient()
     const { data, error } = await client.query({
       query: GET_COMPANY_BY_ID,
       variables: { id },
@@ -28,7 +30,11 @@ export default async function CompanyDetailPage({ params }) {
           </Typography>
           <Link
             href="/companies"
-            style={{ textAlign: "center", display: "block", marginTop: "20px" }}
+            style={{
+              textAlign: "center",
+              display: "block",
+              marginTop: "20px",
+            }}
           >
             Back to Companies
           </Link>
@@ -36,6 +42,7 @@ export default async function CompanyDetailPage({ params }) {
       )
     }
 
+    // Enrich each customer with its total revenue from its orders.
     company = {
       ...data.company,
       customers: data.company.customers.map((customer) => {
@@ -64,7 +71,11 @@ export default async function CompanyDetailPage({ params }) {
         </Typography>
         <Link
           href="/companies"
-          style={{ textAlign: "center", display: "block", marginTop: "20px" }}
+          style={{
+            textAlign: "center",
+            display: "block",
+            marginTop: "20px",
+          }}
         >
           Back to Companies
         </Link>
@@ -96,37 +107,17 @@ export default async function CompanyDetailPage({ params }) {
         </Typography>
       </Box>
 
-      <Typography variant="h6">Customers</Typography>
-      <List
-        sx={{
-          width: "100%",
-          maxWidth: 800,
-          margin: "0 auto",
-          bgcolor: "background.paper",
-          borderRadius: "8px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        {company.customers.length > 0 ? (
-          company.customers.map((customer, index) => (
-            <ListItem alignItems="flex-start" key={index}>
-              <ListItemText
-                primary={customer.name}
-                secondary={`Email: ${
-                  customer.email
-                } | Total: $${customer.totalPrice.toFixed(2)}`}
-              />
-              <Link href={`/customers/${customer.id}`} passHref>
-                <Typography color="primary">View Details</Typography>
-              </Link>
-            </ListItem>
-          ))
-        ) : (
-          <Typography align="center" sx={{ padding: "10px" }}>
-            No customers associated with this company.
-          </Typography>
-        )}
-      </List>
+      <Typography variant="h6" sx={{ marginBottom: "10px" }}>
+        Customers
+      </Typography>
+
+      {company.customers.length > 0 ? (
+        <CompanyCustomersTable customers={company.customers} />
+      ) : (
+        <Typography align="center" sx={{ padding: "10px" }}>
+          No customers associated with this company.
+        </Typography>
+      )}
 
       <Link
         href="/companies"
